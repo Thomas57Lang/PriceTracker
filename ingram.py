@@ -8,7 +8,7 @@ from selenium.webdriver.support.expected_conditions import url_contains
 
 
 def ingram_price_grabber(sku_list):
-    driver = webdriver.Chrome(service=ChromeService(executable_path=ChromeDriverManager().install()))
+    driver = webdriver.Chrome(service=ChromeService(executable_path='/Users/thomaslangston/PycharmProjects/pythonProject/chromedriver'))
 
     driver.get("https://usa.ingrammicro.com/Site/Home")
 
@@ -26,8 +26,12 @@ def ingram_price_grabber(sku_list):
 
     # Login using credentials below
 
-    text_box.send_keys("thomas@nordicpc.com")
-    password_box.send_keys("@Ingr4mM1cr0")
+    f = open('ingram.txt')
+    lines = f.read().splitlines()
+    f.close()
+
+    text_box.send_keys(lines[0])
+    password_box.send_keys(lines[1])
     submit_button.click()
 
     WebDriverWait(driver, timeout=15).until(url_matches("https://usa.ingrammicro.com/Site/Home"))

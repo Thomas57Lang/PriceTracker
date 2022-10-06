@@ -5,7 +5,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 
 def asi_price_grabber(sku_list):
-    driver = webdriver.Chrome(service=ChromeService(executable_path=ChromeDriverManager().install()))
+    driver = webdriver.Chrome(service=ChromeService(executable_path='/Users/thomaslangston/PycharmProjects/pythonProject/chromedriver'))
 
     driver.get("https://www.asipartner.com/partneraccess/Auth/Login.aspx?ReturnUrl=%2fpartneraccess%2fdefault.aspx")
 
@@ -19,9 +19,13 @@ def asi_price_grabber(sku_list):
     submit_button = driver.find_element(by=By.NAME, value="ctl00$ctl00$main$main$ctl00$Logon")
 
     # Login using credentials below
+    f = open('asi.txt')
+    lines = f.read().splitlines()
+    f.close()
 
-    text_box.send_keys("99150")
-    password_box.send_keys("by99150tM")
+    text_box.send_keys(lines[0])
+    password_box.send_keys(lines[1])
+
     submit_button.click()
 
     for x in sku_list:
