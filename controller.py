@@ -31,3 +31,4 @@ def ingram_controller():
     file.close()
     print("Collecting prices from Ingram.. please wait")
     ingram.ingram_price_grabber(skus)
+
