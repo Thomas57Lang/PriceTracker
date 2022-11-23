@@ -2,6 +2,11 @@ import asi
 import ingram
 import csv
 
+# Handles the webscrapers and calls them individually.
+# Updates the SKU csvs with data delivered from the Database.
+# TODO: Handle errors gracefully and inform the user. It should then move on the next scrapper if possible.
+
+# TODO: Update the methods so that as they collect each price they update the DB.
 
 def init_webscrape():
     print("Collecting prices and stock.. please wait")
