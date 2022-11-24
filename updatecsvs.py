@@ -1,58 +1,17 @@
-import psycopg2
 from psycopg2 import sql
-import config
 import pandas as pd
 import csv
+import dbconnect
 
 # Connection variable created by psycopg2 handles the connection to the DB.
-conn = None
-
-
-# Handles the connection to the database.
-#
-
-
-# connect () Initiates the connection to the DB.
-def connect():
-    global conn
-    try:
-        params = config.config()
-
-        print('Connecting to database...')
-        conn = psycopg2.connect(**params)
-        cur = conn.cursor()
-
-        print('PostgreSQL database version:')
-        cur.execute('SELECT version()')
-
-        db_version = cur.fetchone()
-        print(db_version)
-
-        cur.close()
-
-    except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
-
-
-# closed() Ensures that the db connection is closed afterwards.
-def close():
-    global conn
-    try:
-        if conn is not None:
-            conn.close()
-            print('Database connection closed.')
-        else:
-            print('Database connection already closed')
-
-    except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
-
+# conn = None
 
 # get_skus() Run a sql query to collect the SKUs from a particular table then outputs that in a CSV.
 # Parameter: table_name - Name of the table to run the query on.
+# noinspection PyUnresolvedReferences
 def get_skus(table_name):
-    global conn
-    cur = conn.cursor()
+    localconn = dbconnect.conn
+    cur = localconn.cursor()
     # Execute sql query to select all rows from the table and get the SKUs.
     query = sql.SQL("SELECT {itemSKU} FROM {table};").format(
         table=sql.Identifier(table_name),
@@ -72,9 +31,11 @@ def get_skus(table_name):
     cur.close()
 
 
+# get_table_csvs() Runs a SQL query to select all the tables from the public schema. It then updates the tables.csv.
+# noinspection PyUnresolvedReferences
 def get_table_csvs():
-    global conn
-    cur = conn.cursor()
+    localconn = dbconnect.conn
+    cur = localconn.cursor()
 
     # Pull each table name.
     # SELECT TABLE_NAME
@@ -97,11 +58,11 @@ def get_table_csvs():
     cur.close()
 
 
-# TODO: Call each table using get_skus() and the csv from get_table_csvs() and update each CSV. Handle errors
-#  gracefully.
+# update_csvs() Uses get_table_csvs() to update the tables.csv and then iterates through the file.
+# For each row in tables.csv check some edge cases and then call get_skus() to update the respective csvs.
+# noinspection PyUnresolvedReferences
 def update_csvs():
-    global conn
-    cur = conn.cursor()
+    dbconnect.connect()
     # Update the tables csv.
     # For each table call get_skus and update the csv that the web scrapers will use.
     # Utilize try except block to handle failures.
@@ -109,19 +70,18 @@ def update_csvs():
 
     f = open('tables.csv')
     csvreader = csv.reader(f)
-    tables = []
 
     for row in csvreader:
         if (row[0] != 'Item') & (row[0] != 'table_name'):
-            get_skus(row[0])
+            # noinspection PyBroadException
+            try:
+                get_skus(row[0])
+            except:
+                print("An exception was thrown. Please check table: " + row[0])
 
     f.close()
+    dbconnect.close()
 
-
-# TODO: Create a method to update the prices of each item in a table with new data. Needs to accept a table name as a
-#  parameter and the sku.
 
 if __name__ == '__main__':
-    connect()
     update_csvs()
-    close()

@@ -5,10 +5,14 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support.expected_conditions import url_matches
 from selenium.webdriver.support.expected_conditions import url_contains
+import dbconnect
 
+tableName = 'IngramItem'
+# TODO: Fix code to work with new site design.
 
 def ingram_price_grabber(sku_list):
-    driver = webdriver.Chrome(service=ChromeService(executable_path='/Users/thomaslangston/PycharmProjects/pythonProject/chromedriver'))
+    driver = webdriver.Chrome(
+        service=ChromeService(executable_path='/Users/thomaslangston/PycharmProjects/pythonProject/chromedriver'))
 
     driver.get("https://usa.ingrammicro.com/Site/Home")
 
@@ -21,8 +25,10 @@ def ingram_price_grabber(sku_list):
     login_button.click()
 
     text_box = WebDriverWait(driver, timeout=3).until(lambda d: d.find_element(by=By.ID, value="okta-signin-username"))
-    password_box = WebDriverWait(driver, timeout=3).until(lambda d: d.find_element(by=By.ID, value="okta-signin-password"))
-    submit_button = WebDriverWait(driver, timeout=3).until(lambda d: d.find_element(by=By.ID, value="okta-signin-submit"))
+    password_box = WebDriverWait(driver, timeout=3).until(
+        lambda d: d.find_element(by=By.ID, value="okta-signin-password"))
+    submit_button = WebDriverWait(driver, timeout=3).until(
+        lambda d: d.find_element(by=By.ID, value="okta-signin-submit"))
 
     # Login using credentials below
 
@@ -36,6 +42,13 @@ def ingram_price_grabber(sku_list):
 
     WebDriverWait(driver, timeout=15).until(url_matches("https://usa.ingrammicro.com/Site/Home"))
 
+    # TODO: Establish connection to database
+
+    localconn = dbconnect.conn
+    cur = localconn.cursor()
+    # TODO: Enclose the following loop in try except block so we can safely close the connection to the database if
+    # TODO: the loop fails.
+
     for x in sku_list:
         search_box = driver.find_element(by=By.ID, value="searchBox_Global_v2")
         # search_button = driver.find_element(by=By.ID, value="btnSearch")
@@ -48,6 +61,7 @@ def ingram_price_grabber(sku_list):
         price = item.find_element(by=By.ID, value="BBB_A300-" + id)
         WebDriverWait(price, timeout=10).until(lambda p: p.text != "Loading...")
         inventory = item.find_element(by=By.ID, value="AAA_A300-" + id)
+        # TODO: Insert price and stock for that item in the database.
         print("Price: " + price.text + "\n")
         print("Current Inventory: \n" + inventory.text + "\n")
     #     original_string = item.text
