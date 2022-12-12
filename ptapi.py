@@ -1,7 +1,7 @@
-from typing import Union
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import readdb
+
 
 app = FastAPI()
 
@@ -17,14 +17,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-data = readdb.read_db("ASIItem")
-
-
 @app.get("/")
 async def read_root():
+    data = readdb.read_db("Item")
     return data
 
-# @app.get("/items/{item_id}")
-# def read_item(item_id: int, q: Union[str, None] = None):
-#     return {"item_id": item_id, "q": q}
+@app.get("/item/")
+async def read_item(table_name: str = "ASIItem", sku: str = "206704"):
+    data = readdb.read_item_db(table_name, sku)
+    return data
