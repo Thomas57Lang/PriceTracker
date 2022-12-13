@@ -1,10 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support.expected_conditions import url_matches
-from selenium.webdriver.support.expected_conditions import url_contains
 import dbconnect
 
 tableName = 'IngramItem'
@@ -12,7 +10,7 @@ tableName = 'IngramItem'
 
 def ingram_price_grabber(sku_list):
     driver = webdriver.Chrome(
-        service=ChromeService(executable_path='/Users/thomaslangston/PycharmProjects/pythonProject/chromedriver'))
+        service=ChromeService(executable_path='/backend/chromedriver'))
 
     driver.get("https://usa.ingrammicro.com/Site/Home")
 

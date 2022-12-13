@@ -10,7 +10,7 @@ tableName = 'ASIItem'
 # noinspection PyBroadException
 def asi_price_grabber(sku_list):
     driver = webdriver.Chrome(
-        service=ChromeService(executable_path='/Users/thomaslangston/PycharmProjects/pythonProject/chromedriver'))
+        service=ChromeService(executable_path='/backend/chromedriver'))
 
     driver.get("https://www.asipartner.com/partneraccess/Auth/Login.aspx?ReturnUrl=%2fpartneraccess%2fdefault.aspx")
 

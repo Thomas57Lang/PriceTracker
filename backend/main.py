@@ -14,7 +14,7 @@ def main():
     elif len(args) == 3 and args[0] == '-i':
         insertdb.insert_db(args[1], args[2])
     elif len(args) == 1 and args[0] == '-clean':
-        test = os.listdir("/Users/thomaslangston/PycharmProjects/pythonProject")
+        test = os.listdir("/")
         for item in test:
             if item.endswith(".csv"):
                 os.remove(item)

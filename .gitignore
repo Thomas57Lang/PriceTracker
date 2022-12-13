@@ -1,6 +1,8 @@
-/ingram.txt
+/backend/ingram.txt
 /.idea/
-/asi.txt
+/backend/asi.txt
 /SKUs.csv
 /ingramSKUs.csv
-/database.ini
+/backend/database.ini
+/frontendv2/react/react-test-dashboard/node_modules/
+
